@@ -27,11 +27,11 @@ load_dotenv(BASE_DIR / ".env")
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
 
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "0").lower() in ["true", "t", "1"]
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(" ")
-
 
 # Application definition
 
@@ -83,16 +83,20 @@ WSGI_APPLICATION = "lyche.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
 
-DATABASES = {
+if DEBUG == 0:
+    DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
+} 
+else:
+    DATABASES = {
     "default": dj_database_url.parse(os.environ.get("DATABASE_URL"), conn_max_age=600)
 }
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -128,10 +132,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 STATIC_URL = "/static/"
-# STATICFILES_DIRS = [
-#     BASE_DIR / "static",
-# ]
-STATIC_ROOT = BASE_DIR / 'static'
+if DEBUG == 0:
+    STATICFILES_DIRS = [
+        BASE_DIR / "static",
+    ]
+else:
+    STATIC_ROOT = BASE_DIR / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -149,7 +155,7 @@ LOGGING = {
     "root": {"handlers": ["console"], "level": "INFO"},
 }
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 
